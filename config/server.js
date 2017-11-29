@@ -1,5 +1,6 @@
 /* importar o módulo do framework express */
 var express = require('express');
+var session = require('express-session');
 
 /* importar o módulo do consign */
 var consign = require('consign');
@@ -23,12 +24,18 @@ app.use(express.static('./app/public'));
 /* configurar o middleware body-parser */
 app.use(bodyParser.urlencoded({extended: true}));
 
-/* configurar o middleware express-validator */
+/* configurar o middleware express */
 app.use(expressValidator());
+app.use(session({
+	secret: 'omeupau',
+	resave: false,
+	saveUninitialized: false
+}));
 
 /* efetua o autoload das rotas, dos models e dos controllers para o objeto app */
 consign()
 	.include('app/routes')
+	.then('config/dbConnection.js')
 	.then('app/models')
 	.then('app/controllers')
 	.into(app);
